@@ -1,17 +1,97 @@
 import { Message, Platform } from '../types';
 
+// Product Categories
+const products = {
+  premium: {
+    name: 'Premium Subscription',
+    price: '$49.99/month',
+    features: [
+      'Unlimited access',
+      '24/7 priority support',
+      'Advanced analytics',
+      'Custom integrations'
+    ]
+  },
+  basic: {
+    name: 'Basic Subscription',
+    price: '$19.99/month',
+    features: [
+      'Standard access',
+      'Email support',
+      'Basic analytics',
+      'Core features'
+    ]
+  },
+  payAsYouGo: {
+    name: 'Pay-as-you-go Plan',
+    price: '$0.10 per use',
+    features: [
+      'No monthly commitment',
+      'Basic support',
+      'Usage-based billing',
+      'Core features'
+    ]
+  }
+};
+
+// Response Templates
 const productInfo = {
   response: `We offer a variety of products:
   
-1. Premium Subscription - $49.99/month
-2. Basic Subscription - $19.99/month
-3. Pay-as-you-go Plan - $0.10 per use
+1. Premium Subscription - ${products.premium.price}
+2. Basic Subscription - ${products.basic.price}
+3. Pay-as-you-go Plan - ${products.payAsYouGo.price}
 
 Would you like more information about any specific product?`,
   quickReplies: [
     { id: '1', text: 'Premium Details' },
     { id: '2', text: 'Basic Details' },
     { id: '3', text: 'Pay-as-you-go Details' }
+  ]
+};
+
+const premiumDetails = {
+  response: `Premium Subscription (${products.premium.price})
+
+Features:
+${products.premium.features.map(feature => `• ${feature}`).join('\n')}
+
+Would you like to subscribe or learn about other plans?`,
+  quickReplies: [
+    { id: '1', text: 'Subscribe Now' },
+    { id: '2', text: 'Compare Plans' },
+    { id: '3', text: 'Basic Details' },
+    { id: '4', text: 'Pay-as-you-go Details' }
+  ]
+};
+
+const basicDetails = {
+  response: `Basic Subscription (${products.basic.price})
+
+Features:
+${products.basic.features.map(feature => `• ${feature}`).join('\n')}
+
+Would you like to subscribe or learn about other plans?`,
+  quickReplies: [
+    { id: '1', text: 'Subscribe Now' },
+    { id: '2', text: 'Compare Plans' },
+    { id: '3', text: 'Premium Details' },
+    { id: '4', text: 'Pay-as-you-go Details' }
+  ]
+};
+
+const payAsYouGoDetails = {
+  response: `Pay-as-you-go Plan (${products.payAsYouGo.price})
+
+Features:
+${products.payAsYouGo.features.map(feature => `• ${feature}`).join('\n')}
+
+Would you like to subscribe or learn about other plans?`,
+  quickReplies: [
+    { id: '1', text: 'Subscribe Now' },
+    { id: '2', text: 'Compare Plans' },
+    { id: '3', text: 'Premium Details' },
+    { id: '4', text: 'Basic Details' }
   ]
 };
 
@@ -33,7 +113,8 @@ const returnsRefunds = {
 For refunds, please allow 5-7 business days after we receive your return.`,
   quickReplies: [
     { id: '1', text: 'Start a return' },
-    { id: '2', text: 'Refund status' }
+    { id: '2', text: 'Refund status' },
+    { id: '3', text: 'Contact support' }
   ]
 };
 
@@ -69,10 +150,19 @@ export const generateBotResponse = (userInput: string, platform: Platform): Mess
   const input = userInput.toLowerCase();
   let responseData;
 
-  if (input.includes('product') || input.includes('pricing') || input.includes('premium') || 
-      input.includes('basic') || input.includes('pay') || input.includes('subscription')) {
+  // Product-related responses
+  if (input.includes('premium details')) {
+    responseData = premiumDetails;
+  } else if (input.includes('basic details')) {
+    responseData = basicDetails;
+  } else if (input.includes('pay-as-you-go details')) {
+    responseData = payAsYouGoDetails;
+  } else if (input.includes('product') || input.includes('pricing') || 
+             input.includes('subscription') || input.includes('plan')) {
     responseData = productInfo;
-  } else if (input.includes('order') || input.includes('status') || input.includes('tracking')) {
+  }
+  // Order and support responses
+  else if (input.includes('order') || input.includes('status') || input.includes('tracking')) {
     responseData = orderStatus;
   } else if (input.includes('return') || input.includes('refund')) {
     responseData = returnsRefunds;
